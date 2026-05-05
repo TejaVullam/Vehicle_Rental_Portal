@@ -6,6 +6,7 @@ import { env } from "./config/env";
 import { httpLogger } from "./middleware/logger";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { authRouter } from "./routes/auth.routes";
+import { userRouter } from "./routes/user.routes";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.get("/error-test", async (req, res) => {
 
 // Routes
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 
 // 404 handler
 app.use(notFoundHandler);
