@@ -8,6 +8,7 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { authRouter } from "./routes/auth.routes";
 import { userRouter } from "./routes/user.routes";
 import { vehicleRouter } from "./routes/vehicle.routes";
+import { bookingRouter } from "./routes/booking.routes";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.get("/error-test", async (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/vehicles", vehicleRouter);
+app.use("/api/bookings", bookingRouter);
 
 // 404 handler
 app.use(notFoundHandler);
