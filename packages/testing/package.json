@@ -1,0 +1,15 @@
+{
+  "name": "@p2p/testing",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@p2p/config": "workspace:*",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

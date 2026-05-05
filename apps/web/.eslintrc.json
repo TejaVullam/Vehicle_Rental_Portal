@@ -1,0 +1,6 @@
+{
+  "extends": "../../packages/config/eslint.js",
+  "rules": {
+    "@next/next/no-html-link-for-pages": "off"
+  }
+}

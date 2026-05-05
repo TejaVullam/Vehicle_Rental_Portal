@@ -1,0 +1,15 @@
+{
+  "name": "@p2p/shared",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@p2p/config": "workspace:*",
+    "@types/node": "^20.12.12",
+    "typescript": "^5.4.5"
+  }
+}
