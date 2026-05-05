@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { env } from "./config/env";
 import { httpLogger } from "./middleware/logger";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
+import { authRouter } from "./routes/auth.routes";
 
 const app = express();
 
@@ -25,6 +26,9 @@ app.get("/health", (req, res) => {
 app.get("/error-test", async (req, res) => {
   throw new Error("This is a test error!");
 });
+
+// Routes
+app.use("/api/auth", authRouter);
 
 // 404 handler
 app.use(notFoundHandler);
