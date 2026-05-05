@@ -8,5 +8,5 @@
     "ecmaVersion": "latest"
   },
   "extends": ["eslint:recommended"],
-  "ignorePatterns": ["apps/**", "packages/**", "dist", ".next"]
+  "ignorePatterns": ["dist", ".next", "node_modules", "*.config.js"]
 }

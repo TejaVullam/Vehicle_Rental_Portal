@@ -27,7 +27,7 @@ app.get("/health", (req, res) => {
 });
 
 // Example route testing async errors
-app.get("/error-test", async (req, res) => {
+app.get("/error-test", async (_req, _res) => {
   throw new Error("This is a test error!");
 });
 

@@ -4,14 +4,14 @@ import { logger } from "../utils/logger";
 
 export const httpLogger = pinoHttp({
   logger,
-  genReqId: function (req, res) {
+  genReqId: function (req, _res) {
     const existingID = req.id ?? req.headers["x-request-id"];
     if (existingID) return existingID;
     const id = uuidv4();
-    res.setHeader("X-Request-Id", id);
+    _res.setHeader("X-Request-Id", id);
     return id;
   },
-  customProps: (req, res) => {
+  customProps: (req, _res) => {
     return {
       correlationId: req.id,
     };

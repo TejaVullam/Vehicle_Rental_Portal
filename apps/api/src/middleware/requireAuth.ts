@@ -25,7 +25,7 @@ export const requireAuth = (
 
     req.user = payload;
     next();
-  } catch (error) {
+  } catch {
     throw new UnauthorizedError("Invalid or expired token");
   }
 };

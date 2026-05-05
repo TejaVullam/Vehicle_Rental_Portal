@@ -3,18 +3,8 @@
 import { useVehicle } from "@/hooks/useVehicles";
 import { BookingWidget } from "@/components/bookings/BookingWidget";
 import { Button } from "@/components/ui/button";
-import {
-  Car,
-  Bike,
-  MapPin,
-  Star,
-  User,
-  Calendar,
-  Shield,
-  ChevronLeft,
-} from "lucide-react";
+import { Car, Bike, MapPin, Star, Shield, ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 export default function VehicleDetailsPage({
   params,
