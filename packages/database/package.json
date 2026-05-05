@@ -1,0 +1,25 @@
+{
+  "name": "@p2p/database",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "lint": "eslint \"**/*.ts*\"",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0"
+  },
+  "devDependencies": {
+    "@p2p/config": "workspace:*",
+    "@types/node": "^20.12.12",
+    "prisma": "^5.14.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  }
+}

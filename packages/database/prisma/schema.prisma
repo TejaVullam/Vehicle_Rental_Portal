@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+model User {
+  id                 String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email              String             @unique
+  passwordHash       String
+  firstName          String
+  lastName           String
+  role               Role               @default(USER)
+  verificationStatus VerificationStatus @default(UNVERIFIED)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  vehicles           Vehicle[]
+  bookings           Booking[]          @relation("RenterBookings")
+  reviewsWritten     Review[]           @relation("ReviewsWritten")
+  reviewsReceived    Review[]           @relation("ReviewsReceived")
+  disputesInitiated  Dispute[]          @relation("DisputesInitiated")
+}
+
+enum VehicleType {
+  CAR
+  BIKE
+}
+
+model Vehicle {
+  id                String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerId           String      @db.Uuid
+  type              VehicleType
+  make              String
+  model             String
+  year              Int
+  description       String
+  licensePlate      String      @unique
+  pricePerHour      Float
+  pricePerDay       Float
+  isAvailable       Boolean     @default(true)
+  
+  // Location
+  latitude          Float
+  longitude         Float
+  address           String?
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  owner             User           @relation(fields: [ownerId], references: [id])
+  media             VehicleMedia[]
+  bookings          Booking[]
+  reviews           Review[]
+
+  @@index([latitude, longitude])
+}
+
+model VehicleMedia {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vehicleId String   @db.Uuid
+  url       String
+  type      String   // e.g., 'image/jpeg'
+  createdAt DateTime @default(now())
+
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Booking {
+  id         String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  renterId   String        @db.Uuid
+  vehicleId  String        @db.Uuid
+  startTime  DateTime
+  endTime    DateTime
+  totalPrice Float
+  status     BookingStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  renter     User          @relation("RenterBookings", fields: [renterId], references: [id])
+  vehicle    Vehicle       @relation(fields: [vehicleId], references: [id])
+  payment    Payment?
+  dispute    Dispute?
+}
+
+enum EscrowStatus {
+  HELD
+  RELEASED
+  REFUNDED
+}
+
+model Payment {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingId    String       @unique @db.Uuid
+  amount       Float
+  status       String       // e.g., 'SUCCESS', 'FAILED'
+  escrowStatus EscrowStatus @default(HELD)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  booking      Booking      @relation(fields: [bookingId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId   String   @db.Uuid
+  targetId   String   @db.Uuid
+  vehicleId  String?  @db.Uuid
+  rating     Int      @db.SmallInt // 1-5
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  author     User     @relation("ReviewsWritten", fields: [authorId], references: [id])
+  target     User     @relation("ReviewsReceived", fields: [targetId], references: [id])
+  vehicle    Vehicle? @relation(fields: [vehicleId], references: [id])
+}
+
+model Dispute {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingId   String   @unique @db.Uuid
+  initiatorId String   @db.Uuid
+  reason      String
+  status      String   // e.g., 'OPEN', 'RESOLVED'
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  booking     Booking  @relation(fields: [bookingId], references: [id])
+  initiator   User     @relation("DisputesInitiated", fields: [initiatorId], references: [id])
+}

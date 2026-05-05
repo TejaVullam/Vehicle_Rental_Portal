@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@p2p/database": "workspace:^",
     "@p2p/shared": "workspace:*",
     "@p2p/types": "workspace:*",
     "@t3-oss/env-core": "^0.13.11",
