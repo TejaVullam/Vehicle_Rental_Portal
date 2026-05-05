@@ -35,6 +35,8 @@ model User {
   reviewsWritten     Review[]           @relation("ReviewsWritten")
   reviewsReceived    Review[]           @relation("ReviewsReceived")
   disputesInitiated  Dispute[]          @relation("DisputesInitiated")
+  notifications      Notification[]     @relation("UserNotifications")
+  damageReports      DamageReport[]     @relation("DamageReportsSubmitted")
 }
 
 enum VehicleType {
@@ -63,10 +65,11 @@ model Vehicle {
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 
-  owner             User           @relation(fields: [ownerId], references: [id])
+  owner             User              @relation(fields: [ownerId], references: [id])
   media             VehicleMedia[]
   bookings          Booking[]
   reviews           Review[]
+  damageReports     DamageReport[]    @relation("VehicleDamageReports")
 
   @@index([latitude, longitude])
 }
@@ -99,10 +102,13 @@ model Booking {
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
 
-  renter     User          @relation("RenterBookings", fields: [renterId], references: [id])
-  vehicle    Vehicle       @relation(fields: [vehicleId], references: [id])
+  renter     User                  @relation("RenterBookings", fields: [renterId], references: [id])
+  vehicle    Vehicle               @relation(fields: [vehicleId], references: [id])
   payment    Payment?
   dispute    Dispute?
+  cancellation CancellationPolicy?  @relation("BookingCancellation")
+  checkpoints BookingCheckpoint[]   @relation("BookingCheckpoints")
+  damageReports DamageReport[]      @relation("BookingDamageReports")
 }
 
 enum EscrowStatus {
@@ -137,15 +143,128 @@ model Review {
   vehicle    Vehicle? @relation(fields: [vehicleId], references: [id])
 }
 
+enum DisputeStatus {
+  OPEN
+  RESOLVED
+  REFUNDED
+  REJECTED
+}
+
 model Dispute {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  bookingId   String   @unique @db.Uuid
-  initiatorId String   @db.Uuid
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingId   String        @unique @db.Uuid
+  initiatorId String        @db.Uuid
   reason      String
-  status      String   // e.g., 'OPEN', 'RESOLVED'
+  description String?
+  status      DisputeStatus @default(OPEN)
+  resolution  String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  booking     Booking       @relation(fields: [bookingId], references: [id])
+  initiator   User          @relation("DisputesInitiated", fields: [initiatorId], references: [id])
+  damageReports DamageReport[]
+}
+
+enum CancellationReason {
+  OWNER_REQUEST
+  RENTER_REQUEST
+  BOOKING_EXPIRED
+  PAYMENT_FAILED
+}
+
+model CancellationPolicy {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingId   String     @unique @db.Uuid
+  reason      CancellationReason
+  refundAmount Float
+  refundPercentage Float  // 0-100
+  cancellationTime DateTime
+  processedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  booking     Booking    @relation("BookingCancellation", fields: [bookingId], references: [id])
+}
+
+enum CheckpointType {
+  PICKUP_REQUESTED
+  PICKUP_CONFIRMED
+  PICKUP_COMPLETED
+  RETURN_REQUESTED
+  RETURN_COMPLETED
+}
+
+model BookingCheckpoint {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingId   String       @db.Uuid
+  type        CheckpointType
+  timestamp   DateTime
+  notes       String?
+  createdAt   DateTime     @default(now())
+
+  booking     Booking      @relation("BookingCheckpoints", fields: [bookingId], references: [id])
+
+  @@index([bookingId])
+}
+
+model DamageReport {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingId   String   @db.Uuid
+  vehicleId   String   @db.Uuid
+  reportedBy  String   @db.Uuid
+  disputeId   String?  @db.Uuid
+  description String
+  severity    String   // 'LOW', 'MEDIUM', 'HIGH'
+  estimatedCost Float?
+  resolved    Boolean  @default(false)
+  resolvedAt  DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  booking     Booking  @relation(fields: [bookingId], references: [id])
-  initiator   User     @relation("DisputesInitiated", fields: [initiatorId], references: [id])
+  booking     Booking  @relation("BookingDamageReports", fields: [bookingId], references: [id])
+  vehicle     Vehicle  @relation("VehicleDamageReports", fields: [vehicleId], references: [id])
+  reporter    User     @relation("DamageReportsSubmitted", fields: [reportedBy], references: [id])
+  dispute     Dispute? @relation(fields: [disputeId], references: [id])
+  media       DamageMedia[]
+}
+
+model DamageMedia {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  damageReportId String  @db.Uuid
+  url           String
+  type          String   // e.g., 'image/jpeg'
+  createdAt     DateTime @default(now())
+
+  damageReport  DamageReport @relation(fields: [damageReportId], references: [id])
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMED
+  BOOKING_CANCELLED
+  PICKUP_REMINDER
+  RETURN_DUE
+  DAMAGE_REPORTED
+  DISPUTE_OPENED
+  DISPUTE_RESOLVED
+  PAYMENT_RELEASED
+  REVIEW_REQUEST
+  MESSAGE
+}
+
+model Notification {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String           @db.Uuid
+  type        NotificationType
+  title       String
+  message     String
+  relatedId   String?          // bookingId, disputeId, etc.
+  read        Boolean          @default(false)
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  user        User             @relation("UserNotifications", fields: [userId], references: [id])
+
+  @@index([userId, read])
+  @@index([createdAt])
 }

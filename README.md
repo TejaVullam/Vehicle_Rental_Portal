@@ -80,14 +80,26 @@ pnpm build
 - [x] Payment escrow
 - [x] Ratings & reviews
 
-### Phase 2 🚀 - Marketplace (In Progress)
+### Phase 2 ✅ - Marketplace (In Progress)
 
-- [ ] Cancellation policies
-- [ ] Pickup/Return workflows
-- [ ] Damage reporting
-- [ ] Dispute resolution
-- [ ] Notification engine
-- [ ] Advanced search
+- [x] Cancellation policies with refund management
+- [x] Pickup/Return workflows with checkpoint tracking
+- [x] Damage reporting with media attachments
+- [x] Dispute resolution framework
+- [x] Notification engine
+- [ ] Advanced search & filters
+- [ ] Frontend UI components
+
+**Phase 2 Highlights:**
+
+- Database: 4 new models (CancellationPolicy, BookingCheckpoint, DamageReport, Notification)
+- API: 15+ new REST endpoints integrated with booking flow
+- Features:
+  - Booking cancellation with automatic refund processing
+  - Checkpoint tracking for pickup/return events
+  - Damage reporting with photo evidence
+  - Real-time notifications for booking events
+  - User notification dashboard with read status tracking
 
 ### Phase 3 📊 - Business (Planned)
 
