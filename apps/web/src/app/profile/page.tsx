@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +8,7 @@ import { AddVehicleForm } from "@/components/profile/AddVehicleForm";
 import { BookingList } from "@/components/profile/BookingList";
 import { Car, Calendar, User, Shield } from "lucide-react";
 
-export default function ProfilePage() {
+function ProfileContent() {
   const { isAuthenticated, user } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -118,5 +118,13 @@ export default function ProfilePage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div className="container py-10">Loading...</div>}>
+      <ProfileContent />
+    </Suspense>
   );
 }

@@ -1,0 +1,20 @@
+# Global owners
+* @TejaVullam
+
+# API backend
+/apps/api/ @TejaVullam
+/packages/database/ @TejaVullam
+/packages/types/ @TejaVullam
+/packages/shared/ @TejaVullam
+
+# Frontend
+/apps/web/ @TejaVullam
+/packages/ui/ @TejaVullam
+
+# Configuration
+/.github/ @TejaVullam
+/packages/config/ @TejaVullam
+/packages/testing/ @TejaVullam
+
+# CI/CD
+/.github/workflows/ @TejaVullam

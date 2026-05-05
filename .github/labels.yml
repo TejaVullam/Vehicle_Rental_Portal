@@ -1,0 +1,82 @@
+# GitHub labels configuration
+# Sync these labels to your repository
+
+labels:
+  # Type labels
+  - name: bug
+    color: d73a49
+    description: Something isn't working
+  - name: enhancement
+    color: a2eeef
+    description: New feature or request
+  - name: task
+    color: 0075ca
+    description: Development task
+  - name: documentation
+    color: 0075ca
+    description: Improvements or additions to documentation
+  - name: chore
+    color: fad8c7
+    description: Maintenance task
+
+  # Phase labels
+  - name: "phase/0-foundation"
+    color: fbca04
+    description: Phase 0 - Foundation
+  - name: "phase/1-core"
+    color: fbca04
+    description: Phase 1 - Core Platform
+  - name: "phase/2-marketplace"
+    color: fbca04
+    description: Phase 2 - Marketplace
+  - name: "phase/3-business"
+    color: fbca04
+    description: Phase 3 - Business
+  - name: "phase/4-hardening"
+    color: fbca04
+    description: Phase 4 - Hardening
+
+  # Status labels
+  - name: "status/ready"
+    color: 0e8a16
+    description: Ready to work on
+  - name: "status/in-progress"
+    color: cccccc
+    description: Currently being worked on
+  - name: "status/blocked"
+    color: b60205
+    description: Blocked by something else
+  - name: "status/review"
+    color: 0e8a16
+    description: Waiting for review
+
+  # Priority labels
+  - name: "priority/critical"
+    color: b60205
+    description: Critical priority
+  - name: "priority/high"
+    color: ff6f00
+    description: High priority
+  - name: "priority/medium"
+    color: fbca04
+    description: Medium priority
+  - name: "priority/low"
+    color: 0075ca
+    description: Low priority
+
+  # Area labels
+  - name: "area/api"
+    color: 6f42c1
+    description: Backend API
+  - name: "area/web"
+    color: 6f42c1
+    description: Frontend web app
+  - name: "area/database"
+    color: 6f42c1
+    description: Database & ORM
+  - name: "area/devops"
+    color: 6f42c1
+    description: DevOps & infrastructure
+  - name: "area/testing"
+    color: 6f42c1
+    description: Testing & QA
