@@ -7,6 +7,7 @@ import { httpLogger } from "./middleware/logger";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { authRouter } from "./routes/auth.routes";
 import { userRouter } from "./routes/user.routes";
+import { vehicleRouter } from "./routes/vehicle.routes";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.get("/error-test", async (req, res) => {
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
+app.use("/api/vehicles", vehicleRouter);
 
 // 404 handler
 app.use(notFoundHandler);
