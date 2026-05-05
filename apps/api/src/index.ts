@@ -9,6 +9,7 @@ import { authRouter } from "./routes/auth.routes";
 import { userRouter } from "./routes/user.routes";
 import { vehicleRouter } from "./routes/vehicle.routes";
 import { bookingRouter } from "./routes/booking.routes";
+import { uploadRouter } from "./routes/upload.routes";
 
 const app = express();
 
@@ -30,11 +31,16 @@ app.get("/error-test", async (req, res) => {
   throw new Error("This is a test error!");
 });
 
+// Static files
+import path from "path";
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/vehicles", vehicleRouter);
 app.use("/api/bookings", bookingRouter);
+app.use("/api/upload", uploadRouter);
 
 // 404 handler
 app.use(notFoundHandler);
