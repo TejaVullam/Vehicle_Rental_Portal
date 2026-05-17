@@ -7,12 +7,18 @@ const prisma = new PrismaClient();
 
 // Delete test users after tests run
 afterAll(async () => {
-  await prisma.user.deleteMany({
-    where: {
-      email: {
-        contains: "test-auto",
+  try {
+    await prisma.user.deleteMany({
+      where: {
+        email: {
+          contains: "test-auto",
+        },
       },
-    },
-  });
-  await prisma.$disconnect();
+    });
+  } catch (error) {
+    // Ignore database connection errors during cleanup
+    // This allows tests to run even without a database
+  } finally {
+    await prisma.$disconnect();
+  }
 });
